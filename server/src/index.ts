@@ -14,7 +14,6 @@ app.use(express.json());
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const databaseId = process.env.NOTION_DB_ID!;
-const databaseId2 = process.env.NOTION_LINE_NOTICE_DB_ID!;
 
 app.get("/api/notices", async (req, res) => {
   try {
@@ -32,15 +31,6 @@ app.get("/api/notices", async (req, res) => {
       ],
     });
 
-    const lineResponse = await notion.databases.query({
-      database_id: databaseId2,
-      sorts: [
-        {
-          property: "작성일",
-          direction: "descending",
-        },
-      ],
-    });
 
     const mainResults = mainResponse.results.map((page: any) => ({
       id: page.id,
@@ -53,15 +43,8 @@ app.get("/api/notices", async (req, res) => {
       type: "main",
     }));
 
-    const lineResults = lineResponse.results.map((page: any) => ({
-      id: page.id,
-      title: page.properties["문장"]?.title?.[0]?.plain_text ?? "",
-      createdAt: page.properties["작성일"]?.date?.start ?? "",
-      category: page.properties["중요도"]?.select?.name ?? "",
-      type: "line",
-    }));
 
-    const results = [...lineResults, ...mainResults];
+    const results = [ ...mainResults];
     res.json(results);
   } catch (err) {
     console.error(err);

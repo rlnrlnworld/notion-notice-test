@@ -1,5 +1,7 @@
 "use client"
+
 import { ChevronUp, ExternalLink, X, Loader2, CircleChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -12,6 +14,8 @@ export default function Notices() {
   const [filter, setFilter] = useState(false)
   const [category, setCategory] = useState("all")
   const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  const router = useRouter()
 
   const { data: blocks } = useSWR(selectedId ? `/api/notices/${selectedId}/blocks` : null, fetcher);
 
@@ -31,60 +35,67 @@ export default function Notices() {
       <div className="text-5xl font-bold text-[#32302c] p-4">
         <h1>공지사항</h1>
       </div>
-      <div className="flex items-center gap-2 px-3 py-2 mb-2">
-        <CircleChevronDown size={20} fill="#c2c2c2" stroke="#f9fafb" />
-        <span className="text-base text-gray-400">카테고리</span>
-        <div className="relative">
-          <div onClick={() => setFilter(prev => !prev)} className={`text-sm px-2 py-1 flex items-center gap-2 rounded-md ${category === "all" ? "bg-gray-200" : category === "normal" ? "bg-blue-100 text-blue-500" : "bg-red-100 text-red-500"} hover:!cursor-pointer`}>
-            {category === "all" ? "카테고리 선택" : category === "normal" ? "공지사항" : "오류 수정"}
-            {category != "all" && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setCategory("all")
-                }} 
-                className="w-4 h-4 flex items-center justify-center hover:!cursor-pointer">
-                <X size={15}/>
-              </button>
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2 px-3 py-2 mb-2">
+          <CircleChevronDown size={20} fill="#c2c2c2" stroke="#f9fafb" />
+          <span className="text-base text-gray-400">카테고리</span>
+          <div className="relative">
+            <div onClick={() => setFilter(prev => !prev)} className={`text-sm px-2 py-1 flex items-center gap-2 rounded-md ${category === "all" ? "bg-gray-200" : category === "normal" ? "bg-blue-100 text-blue-500" : "bg-red-100 text-red-500"} hover:!cursor-pointer`}>
+              {category === "all" ? "카테고리 선택" : category === "normal" ? "공지사항" : "오류 수정"}
+              {category != "all" && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCategory("all")
+                  }} 
+                  className="w-4 h-4 flex items-center justify-center hover:!cursor-pointer">
+                  <X size={15}/>
+                </button>
+              )}
+            </div>
+            { filter && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-md border border-gray-200 z-50 text-nowrap">
+                <ul className="text-sm">
+                  <li 
+                    className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
+                    value="all" 
+                    onClick={() => {
+                      setFilter(false)
+                      setCategory("all")
+                    }}
+                  >
+                    카테고리 선택
+                  </li>
+                  <li 
+                    className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
+                    value="normal" 
+                    onClick={() => {
+                      setFilter(false)
+                      setCategory("normal")
+                    }}
+                  >
+                    공지사항
+                  </li>
+                  <li 
+                    className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
+                    value="bug" 
+                    onClick={() => {
+                      setFilter(false)
+                      setCategory("bug")
+                    }}
+                  >
+                    오류 수정
+                  </li>
+                </ul>
+              </div>
             )}
           </div>
-          { filter && (
-            <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white rounded-md border border-gray-200 z-50 text-nowrap">
-              <ul className="text-sm">
-                <li 
-                  className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
-                  value="all" 
-                  onClick={() => {
-                    setFilter(false)
-                    setCategory("all")
-                  }}
-                >
-                  카테고리 선택
-                </li>
-                <li 
-                  className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
-                  value="normal" 
-                  onClick={() => {
-                    setFilter(false)
-                    setCategory("normal")
-                  }}
-                >
-                  공지사항
-                </li>
-                <li 
-                  className="px-2 py-1 hover:bg-gray-50 hover:!cursor-pointer" 
-                  value="bug" 
-                  onClick={() => {
-                    setFilter(false)
-                    setCategory("bug")
-                  }}
-                >
-                  오류 수정
-                </li>
-              </ul>
-            </div>
-          )}
         </div>
+        <button 
+          onClick={() => router.push("/new-notice")}
+          className="text-sm text-white bg-[#32302c] hover:bg-[#242320] hover:!cursor-pointer px-2 py-1 rounded-md mr-6">
+            공지사항 추가
+        </button>
       </div>
       <div className="flex-1 flex gap-2">
         <section className={`h-full max-h-[calc(100vh-150px)] overflow-y-auto ${show ? "w-1/2" : "w-full"}`}>
@@ -147,7 +158,7 @@ export default function Notices() {
           </ul>
         </section>
         {selectedId && show && (
-          <section className="w-1/2 h-full rounded-md bg-white p-4 flex-col">
+          <section className="w-1/2 h-[calc(100%-20px)] rounded-md bg-white p-4 flex-col">
             <div className="w-full flex items-center p-2 justify-between text-gray-500 hover:text-gray-600">
               <div className="flex-1">
                 {prevPost && (
@@ -200,7 +211,7 @@ export default function Notices() {
               </div>
             )}
             {blocks ? (
-              <div className="flex-1 flex flex-col h-[calc(100vh-380px)] overflow-auto p-2">
+              <div className="flex-1 flex flex-col h-[calc(100vh-400px)] overflow-auto p-2">
                 
                 {(() => {
                   const rendered: React.ReactNode[] = [];

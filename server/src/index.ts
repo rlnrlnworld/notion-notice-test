@@ -66,6 +66,7 @@ async function getBlocksWithChildren(blockId: string): Promise<any[]> {
   return allBlocks;
 }
 
+
 app.get("/api/notices/:id/blocks", async (req, res) => {
   const pageId = req.params.id;
   try {
@@ -74,6 +75,67 @@ app.get("/api/notices/:id/blocks", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("블록 조회 실패");
+  }
+});
+
+app.post("/api/notices", async (req, res) => {
+  const { title, version, url, category, isPublic, createdAt, content } = req.body;
+
+  try {
+    const response = await notion.pages.create({
+      parent: { database_id: databaseId },
+      properties: {
+        제목: {
+          title: [
+            {
+              text: { content: title },
+            },
+          ],
+        },
+        버전: {
+          rich_text: [
+            {
+              text: { content: version },
+            },
+          ],
+        },
+        URL: {
+          url: url || null,
+        },
+        선택: {
+          select: {
+            name: category,
+          },
+        },
+        공개여부: {
+          checkbox: isPublic,
+        },
+        작성일: {
+          date: {
+            start: createdAt,
+          },
+        },
+      },
+      children: content.map((text: string) => ({
+        object: "block",
+        type: "paragraph",
+        paragraph: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: text,
+              },
+            },
+          ],
+        },
+      })),
+    });
+
+    res.status(200).json({ id: response.id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("공지 생성 실패");
   }
 });
 

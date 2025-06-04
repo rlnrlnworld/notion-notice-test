@@ -260,7 +260,7 @@ export default function Notices() {
                               key={block.id}
                               src={imageUrl}
                               alt="notion image"
-                              className="my-4 max-w-full rounded-md shadow-md"
+                              className="my-4 max-w-150 rounded-md shadow-md"
                             />
                           );
                           break;

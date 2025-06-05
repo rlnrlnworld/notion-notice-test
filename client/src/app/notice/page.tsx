@@ -228,7 +228,6 @@ export default function Notices() {
                   const rendered: React.ReactNode[] = [];
                   let listItems: any[] = [];
                   blocks.forEach((block: any, idx: number) => {
-                    console.log(block)
                     const text = (block[block.type]?.rich_text || []).map((t: any, i: number) => {
                       const annotation = t.annotations;
                       const notionColorMap: Record<string, string> = {
@@ -339,7 +338,7 @@ export default function Notices() {
                 })()}
               </div>
             ) : (
-              <div className="flex-1 flex flex-col gap-4 h-[calc(100vh-350px)] overflow-auto p-2 items-center justify-center">
+              <div className="flex-1 flex flex-col gap-4 h-[calc(100vh-400px)] overflow-auto p-2 items-center justify-center">
                 <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
                 불러오는 중...
               </div>

@@ -19,10 +19,6 @@ app.get("/api/notices", async (req, res) => {
   try {
     const mainResponse = await notion.databases.query({
       database_id: databaseId,
-      filter: {
-        property: "공개여부",
-        checkbox: { equals: true },
-      },
       sorts: [
         {
           property: "작성일",
@@ -37,9 +33,8 @@ app.get("/api/notices", async (req, res) => {
       title: page.properties["제목"]?.title?.[0]?.plain_text ?? "",
       version: page.properties["버전"]?.rich_text?.[0]?.plain_text ?? "",
       createdAt: page.properties["작성일"]?.date?.start ?? "",
-      isPublic: page.properties["공개여부"]?.checkbox ?? false,
-      url: page.properties["URL"]?.url ?? "",
-      category: page.properties["선택"]?.select?.name ?? "",
+      category: page.properties["카테고리"]?.select?.name ?? "",
+      url: `https://keynoty.notion.site/${page.id.replace(/-/g, "")}`,
       type: "main",
     }));
 

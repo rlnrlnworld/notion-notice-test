@@ -26,13 +26,8 @@ export default function Notices() {
   const nextPost = currentIndex >= 0 && currentIndex < data.length - 1 ? data[currentIndex + 1] : null;
 
   const selectedRow = data?.find((row: any) => row.id === selectedId);
-
-  // 웹 게시 링크 속성 대신 아래 코드로
   useEffect(() => {
-    if (selectedRow?.id) {
-      const testUrl = `https://plum-dragon-26e.notion.site/${selectedRow.id.replace(/-/g, "")}`
-      console.log("웹 게시 링크:", testUrl)
-    }
+    console.log(selectedRow)
   }, [selectedRow])
 
   if (error) return <div>불러오기 실패</div>;
@@ -123,7 +118,7 @@ export default function Notices() {
                       {row.category === "공지사항" ? (
                         <span className="py-1 px-2 text-sm w-fit rounded-md text-blue-500 bg-blue-100">공지사항</span>
                       ) : (
-                        <span className="py-1 px-2 text-sm w-fit rounded-md text-red-500 bg-red-100">오류 수정</span>
+                        <span className="py-1 px-2 text-sm w-fit rounded-md text-green-600 bg-green-100">업데이트</span>
                       )}
                     </div>
                     {row.createdAt && (
@@ -201,9 +196,9 @@ export default function Notices() {
               </div>
             </div>
             {selectedRow && (
-              <div className="border-b-2 border-gray-200 pb-3 mb-3 mt-2 px-2">
+              <div className="border-b-2 border-gray-200 pb-3 mb-3 mt-2 px-2 text-[#32302c]">
                 <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span className={`px-2 py-1 rounded-md ${selectedRow.category === "공지사항" ? "bg-blue-100 text-blue-500" : "bg-red-100 text-red-500"}`}>
+                  <span className={`px-2 py-1 rounded-md ${selectedRow.category === "공지사항" ? "bg-blue-100 text-blue-500" : "bg-green-100 text-green-600"}`}>
                     {selectedRow.category}
                   </span>
                   <div className="border-r w-1 h-3 border-gray-200"></div>
@@ -259,6 +254,7 @@ export default function Notices() {
                           rel="noopener noreferrer"
                           style={colorStyle}
                           className={
+                            `text-[#43413b]` +
                             `${annotation.bold ? "font-bold" : ""} ` +
                             `${annotation.italic ? "italic" : ""} ` +
                             `${annotation.underline ? "underline" : ""} underline`
@@ -271,6 +267,7 @@ export default function Notices() {
                           key={i}
                           style={colorStyle}
                           className={
+                            `text-[#32302c]` +
                             `${annotation.bold ? "font-bold" : ""} ` +
                             `${annotation.italic ? "italic" : ""} ` +
                             `${annotation.underline ? "underline" : ""}`
@@ -282,7 +279,7 @@ export default function Notices() {
                     });
                     if (block.type === "bulleted_list_item") {
                       listItems.push(
-                        <li key={block.id} className="list-disc ml-5 text-sm text-gray-700">{text}</li>
+                        <li key={block.id} className="list-disc ml-5 text-[#32302c]">{text}</li>
                       );
                       if (
                         idx === blocks.length - 1 ||
@@ -311,7 +308,7 @@ export default function Notices() {
                           rendered.push(<h3 key={block.id} className="text-xl font-bold my-2">{text}</h3>);
                           break;
                         case "paragraph":
-                          rendered.push(<p key={block.id} className="text-sm text-gray-700">{text}</p>);
+                          rendered.push(<p key={block.id} className=" text-gray-700">{text}</p>);
                           break;
                         case "divider":
                           rendered.push(<hr key={block.id} className="my-4 border-t border-gray-200" />);

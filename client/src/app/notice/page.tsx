@@ -2,7 +2,7 @@
 
 import { ChevronUp, ExternalLink, X, Loader2, CircleChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) =>
@@ -19,16 +19,25 @@ export default function Notices() {
 
   const { data: blocks } = useSWR(selectedId ? `/api/notices/${selectedId}/blocks` : null, fetcher);
 
-  if (error) return <div>불러오기 실패</div>;
-  if (!data || data.length === 0) return <div>게시글 없음</div>;
-
   const currentIndex =
     data && selectedId ? data.findIndex((row: any) => row.id === selectedId) : -1;
 
   const prevPost = currentIndex > 0 ? data[currentIndex - 1] : null;
   const nextPost = currentIndex >= 0 && currentIndex < data.length - 1 ? data[currentIndex + 1] : null;
 
-  const selectedRow = data.find((row: any) => row.id === selectedId);
+  const selectedRow = data?.find((row: any) => row.id === selectedId);
+
+  // 웹 게시 링크 속성 대신 아래 코드로
+  useEffect(() => {
+    if (selectedRow?.id) {
+      const testUrl = `https://plum-dragon-26e.notion.site/${selectedRow.id.replace(/-/g, "")}`
+      console.log("웹 게시 링크:", testUrl)
+    }
+  }, [selectedRow])
+
+  if (error) return <div>불러오기 실패</div>;
+  if (!data || data.length === 0) return <div>게시글 없음</div>;
+
 
   return (
     <div className="h-screen w-full bg-gray-50 p-6 flex flex-col">

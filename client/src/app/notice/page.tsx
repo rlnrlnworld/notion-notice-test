@@ -228,15 +228,59 @@ export default function Notices() {
                   const rendered: React.ReactNode[] = [];
                   let listItems: any[] = [];
                   blocks.forEach((block: any, idx: number) => {
-                    const text = (block[block.type]?.rich_text || []).map((t: any, i: number) => (
-                      <span key={i} className={
-                        `${t.annotations.bold ? "font-bold" : ""} ` +
-                        `${t.annotations.italic ? "italic" : ""} ` +
-                        `${t.annotations.underline ? "underline" : ""}`
-                      }>
-                        {t.text.content}
-                      </span>
-                    ));
+                    console.log(block)
+                    const text = (block[block.type]?.rich_text || []).map((t: any, i: number) => {
+                      const annotation = t.annotations;
+                      const notionColorMap: Record<string, string> = {
+                        red: "#ef4444",
+                        pink: "#ec4899",
+                        blue: "#3b82f6",
+                        green: "#10b981",
+                        yellow: "#eab308",
+                        purple: "#764fd0",
+                        gray: "#6b7280",
+                        orange: "#f97316",
+                        brown: "#92400e",
+                      };
+
+                      const colorStyle = annotation.color && annotation.color !== "default"
+                        ? {
+                            color: annotation.color.includes("_background") ? undefined : notionColorMap[annotation.color] || undefined,
+                            backgroundColor: annotation.color.includes("_background")
+                              ? `${notionColorMap[annotation.color.replace("_background", "")] || "#f3f4f6"}33`
+                              : undefined
+                          }
+                        : {};
+
+                      return t.text.link?.url ? (
+                        <a
+                          key={i}
+                          href={t.text.link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={colorStyle}
+                          className={
+                            `${annotation.bold ? "font-bold" : ""} ` +
+                            `${annotation.italic ? "italic" : ""} ` +
+                            `${annotation.underline ? "underline" : ""} underline`
+                          }
+                        >
+                          {t.text.content}
+                        </a>
+                      ) : (
+                        <span
+                          key={i}
+                          style={colorStyle}
+                          className={
+                            `${annotation.bold ? "font-bold" : ""} ` +
+                            `${annotation.italic ? "italic" : ""} ` +
+                            `${annotation.underline ? "underline" : ""}`
+                          }
+                        >
+                          {t.text.content}
+                        </span>
+                      );
+                    });
                     if (block.type === "bulleted_list_item") {
                       listItems.push(
                         <li key={block.id} className="list-disc ml-5 text-sm text-gray-700">{text}</li>

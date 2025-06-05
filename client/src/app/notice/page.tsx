@@ -206,6 +206,7 @@ export default function Notices() {
                   <span className={`px-2 py-1 rounded-md ${selectedRow.category === "공지사항" ? "bg-blue-100 text-blue-500" : "bg-red-100 text-red-500"}`}>
                     {selectedRow.category}
                   </span>
+                  <div className="border-r w-1 h-3 border-gray-200"></div>
                   {selectedRow.createdAt && (
                     <span>
                       {(() => {
@@ -214,6 +215,7 @@ export default function Notices() {
                       })()}
                     </span>
                   )}
+                  <div className="border-r w-1 h-3 border-gray-200"></div>
                   <span>버전 {selectedRow.version}</span>
                 </div>
                 <h2 className="text-2xl font-semibold mt-2">{selectedRow.title}</h2>
